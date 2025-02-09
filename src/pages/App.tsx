@@ -1,8 +1,25 @@
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Navbar from "../components/Navbar";
+import { useEffect, useState } from "react";
 
 function App() {
   const navigate = useNavigate();
+  const [points, setPoints] = useState(0);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/dashboard/points", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.getItem("token") || "",
+      },
+    }).then((res) => {
+      res.json().then((data) => {
+        setPoints(data.points);
+      });
+    });
+  }, []);
+
   return (
     <main className="min-h-screen bg-gray-50/50">
       <header className="p-2">
@@ -120,10 +137,12 @@ function App() {
           </button>
         </div>
 
-        <div className="mt-5 rounded border border-black/30 p-2">
+        <div
+          className={`mt-5 rounded border border-black/30 p-2 ${!points && "hidden"}`}
+        >
           <h3 className="text-black/40">Total Points</h3>
-          <span className="text-lg font-medium">750</span>
-          <p>+50 from last week</p>
+          <span className="text-lg font-medium">{points}</span>
+          {/* <p>+50 from last week</p> */}
         </div>
 
         <div className="mt-5 flex gap-2">
@@ -141,20 +160,22 @@ function App() {
             </svg>
             {/* <span>Rewards</span> */}
           </div>
-          <div className="flex basis-1/2 flex-col items-center justify-center rounded bg-primary p-4 text-white">
-            <svg
-              className="h-10 w-10"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 448 512"
-              fill="currentColor"
-            >
-              <path
-                d="M0 80C0 53.5 21.5 32 48 32l96 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48L0 80zM64 96l0 64 64 0 0-64L64 96zM0 336c0-26.5 21.5-48 48-48l96 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48l0-96zm64 16l0 64 64 0 0-64-64 0zM304 32l96 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm80 64l-64 0 0 64 64 0 0-64zM256 304c0-8.8 7.2-16 16-16l64 0c8.8 0 16 7.2 16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s7.2-16 16-16s16 7.2 16 16l0 96c0 8.8-7.2 16-16 16l-64 0c-8.8 0-16-7.2-16-16s-7.2-16-16-16s-16 7.2-16 16l0 64c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-160zM368 480a16 16 0 1 1 0-32 16 16 0 1 1 0 32zm64 0a16 16 0 1 1 0-32 16 16 0 1 1 0 32z"
+          <Link to="/scan-qr" className="basis-1/2">
+            <div className="flex flex-col items-center justify-center rounded bg-primary p-4 text-white">
+              <svg
+                className="h-10 w-10"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
                 fill="currentColor"
-              />
-            </svg>
-            {/* <span>Scan</span> */}
-          </div>
+              >
+                <path
+                  d="M0 80C0 53.5 21.5 32 48 32l96 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48L0 80zM64 96l0 64 64 0 0-64L64 96zM0 336c0-26.5 21.5-48 48-48l96 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48l0-96zm64 16l0 64 64 0 0-64-64 0zM304 32l96 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm80 64l-64 0 0 64 64 0 0-64zM256 304c0-8.8 7.2-16 16-16l64 0c8.8 0 16 7.2 16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s7.2-16 16-16s16 7.2 16 16l0 96c0 8.8-7.2 16-16 16l-64 0c-8.8 0-16-7.2-16-16s-7.2-16-16-16s-16 7.2-16 16l0 64c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-160zM368 480a16 16 0 1 1 0-32 16 16 0 1 1 0 32zm64 0a16 16 0 1 1 0-32 16 16 0 1 1 0 32z"
+                  fill="currentColor"
+                />
+              </svg>
+              {/* <span>Scan</span> */}
+            </div>
+          </Link>
         </div>
       </section>
 
